@@ -1,0 +1,49 @@
+// This service saves book information, such as author, book tile, and year released.
+// 1. 'searchBook', user can retrieve a specific book using book title
+// 2. 'addBook', user can add a book to the library
+// 3. 'getAll', user can get all books info from library
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "LibraryProto";
+
+import "google/protobuf/empty.proto";
+
+package services;
+
+service Library {
+  rpc getAll (google.protobuf.Empty) returns (LibraryGetAllResponse) {}
+  rpc searchBook (LibrarySearchBookRequest) returns (LibraryGetAllResponse) {}
+  rpc addBook (LibraryAddBookRequest) returns (LibraryAddBookResponse) {}
+}
+
+// The response message when getting the entries, either by getAll or searchBook
+message LibraryGetAllResponse {
+  bool isSuccess = 1;
+  repeated Book book = 2; // all the hometowns peers entered so far (either all or based on search parameter)
+  string error = 3; // Error message, a String of your choice to show what went wrong if an error occured -- isSuccess would then be false
+}
+
+// The request message to search for specific book by tile
+message LibrarySearchBookRequest {
+  string title = 1;
+}
+
+// The request message adding a new book entry to the server
+message LibraryAddBookRequest {
+  Book book = 1;
+}
+
+// The response message
+message LibraryAddBookResponse {
+  bool isSuccess = 1; // true if success, false and error if it did not work for some reason
+  string error = 2; // Error message
+}
+
+message Book {
+  string title = 1;         // the title of the book
+  string author = 2;        // the author of the book
+  string releaseYear = 3;   // the release year of the book
+}
